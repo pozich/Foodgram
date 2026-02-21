@@ -7,7 +7,7 @@ from sqlalchemy import select
 # Импортируем твои наработки
 from app.kb import main_kb
 from app.database import async_session
-from app.models import Post, User
+from app.models import *
 
 # Создаем роутер, чтобы bot.py мог его увидеть
 router = Router()
