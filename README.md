@@ -4,7 +4,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/pozich/Foodgram?style=flat-square)
 ![GitHub top language](https://img.shields.io/github/languages/top/pozich/Foodgram?color=yellow&style=flat-square)
 ![GitHub last commit](https://img.shields.io/github/last-commit/pozich/Foodgram?style=flat-square)
-![License](https://img.shields.io/github/license/pzch/Foodgram?color=blue&style=flat-square)
+![License](https://img.shields.io/github/license/pozich/Foodgram?color=blue&style=flat-square)
 
 
 ---
