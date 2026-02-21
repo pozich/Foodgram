@@ -10,10 +10,10 @@
 ---
 
 ## Get started
-git clone https://github.com/pozich/Foodgram.git
-cd Foodgram
-pip install -r regs.txt
-python bot.py
+> git clone https://github.com/pozich/Foodgram.git
+> cd Foodgram
+> pip install -r regs.txt
+> python bot.py
 
 ### Stack
 * Aiogram
