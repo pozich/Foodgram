@@ -10,11 +10,16 @@
 ---
 
 ## Get started
-> git clone https://github.com/pozich/Foodgram.git
-> cd Foodgram
-> pip install -r regs.txt
-> python bot.py
+```bash
+git clone https://github.com/pozich/Foodgram.git
+cd Foodgram
+python3 -m venv .venv
+source .venv/bin/activate  # для Linux
+pip install -r reqs.txt
+python bot.py
+```
 
-### Stack
-* Aiogram
-* And other../
+### 🛠 Stack
+* Backend: Python 3.14 + Aiogram 3.x
+* Database: PostgreSQL + SQLAlchemy 2.0 (Async)
+* Other: Pydantic v2, python-dotenv
