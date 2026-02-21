@@ -1,31 +1,22 @@
 import asyncio
-import logging
+import os
 from aiogram import Bot, Dispatcher
-from aiogram.filters import Command
-from aiogram.types import Message
+from dotenv import load_dotenv
 
-import config 
-from database import async_main, add_user
+from app.database import init_db
+from app.handlers.user import router as user_router
 
-logging.basicConfig(level=logging.INFO)
-dp = Dispatcher()
+load_dotenv()
 
-@dp.message(Command("start"))
-async def command_start_handler(message: Message) -> None:
-    await add_user(message.from_user.id, message.from_user.username)
-    await message.answer(f"Здр, {message.from_user.full_name}")
-
-async def main() -> None:
-    await async_main()
-    bot = Bot(token=config.BOT_TOKEN)
+async def main():
+    await init_db() # Запускаем БД
     
-    print("Bot started")
+    bot = Bot(token=os.getenv("TOKEN"))
+    dp = Dispatcher()
     
-    await bot.delete_webhook(drop_pending_updates=True)
+    dp.include_router(user_router)
+    
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("Bot stopped")
+    asyncio.run(main())

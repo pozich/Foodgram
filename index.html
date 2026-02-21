@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить еду</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { color: var(--tg-theme-text-color); background: var(--tg-theme-bg-color); font-family: sans-serif; padding: 20px; }
+        input, textarea { width: 100%; margin-bottom: 15px; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 8px; }
+        button { width: 100%; background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h3>Поделиться едой 🍎</h3>
+    <input type="text" id="title" placeholder="Что отдаете? (например, Яблоки)">
+    <textarea id="desc" rows="4" placeholder="Описание (срок годности, объем)"></textarea>
+    <input type="text" id="loc" placeholder="Где забирать? (Район/Улица)">
+    <button id="send">Опубликовать</button>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Развернуть на весь экран
+
+        document.getElementById('send').addEventListener('click', () => {
+            let data = {
+                title: document.getElementById('title').value,
+                desc: document.getElementById('desc').value,
+                loc: document.getElementById('loc').value
+            };
+            // Простейшая проверка
+            if (!data.title || !data.loc) return alert("Заполни хотя бы название и адрес!");
+            
+            // Отправляем данные боту (в формате строки JSON)
+            tg.sendData(JSON.stringify(data));
+            tg.close();
+        });
+    </script>
+</body>
+</html>
