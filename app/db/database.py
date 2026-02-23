@@ -1,7 +1,10 @@
+# app/bot/db/database.py
 import os
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-from app.models import Base
+from sqlalchemy import select 
 from dotenv import load_dotenv
+
+from app.db.models import Base, User
 
 load_dotenv()
 
@@ -10,5 +13,5 @@ async_session = async_sessionmaker(engine)
 
 async def init_db():
     async with engine.begin() as conn:
-        # Это создаст таблицы users и posts, если их нет
         await conn.run_sync(Base.metadata.create_all)
+
