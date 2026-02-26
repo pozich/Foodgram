@@ -16,3 +16,31 @@ def admin_kb() -> ReplyKeyboardMarkup:
         resize_keyboard=True,  
         input_field_placeholder="Выберите действие..."
     )
+
+def client_kb() -> ReplyKeyboardMarkup:
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                KeyboardButton(
+                    text="Магазин", 
+                    web_app=WebAppInfo(url=f"{WEB_URL}/client.html")
+                )
+            ]
+        ],
+        resize_keyboard=True,  
+        input_field_placeholder="Выберите действие..."
+    )
+
+def seller_kb() -> ReplyKeyboardMarkup:
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                KeyboardButton(
+                    text="Профиль", 
+                    web_app=WebAppInfo(url=f"{WEB_URL}/seller.html")
+                )
+            ]
+        ],
+        resize_keyboard=True,  
+        input_field_placeholder="Выберите действие..."
+    )

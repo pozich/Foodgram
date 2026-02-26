@@ -1,24 +1,74 @@
 # app/bot/db/requests.py
-from sqlalchemy import select
+from sqlalchemy import select, update, or_
 
 from app.db.database import async_session
 from app.db.models import User
 from config import ADMIN_IDS
 
-async def reg_user(tg_id: int, username: str = None):
+async def get_or_reg_user(tg_id: int, username: str):
     async with async_session() as session:
-        user = await session.scalar(select(User).where(User.tg_id == tg_id))
+        # 1. Ищем по ID
+        result = await session.execute(select(User).where(User.tg_id == tg_id))
+        user = result.scalar_one_or_none()
 
-        if not user:
-            new_role = 'admin' if tg_id in ADMIN_IDS else 'client'
-            session.add(User(tg_id=tg_id, username=username, role=new_role))
-            await session.commit()
-        elif user.username != username:
+        if user:
+            # Обновляем юзернейм, если он изменился в телеге
             user.username = username
-            await session.commit()
+        else:
+            # 2. Если по ID нет, ищем "забронированного" по юзернейму
+            if username:
+                # Ищем запись, где username совпал, а ID еще нет (NULL)
+                result = await session.execute(
+                    select(User).where(User.username == username, User.tg_id == None)
+                )
+                user = result.scalar_one_or_none()
+            
+            if user:
+                # Нашли заглушку — привязываем реальный ID
+                user.tg_id = tg_id
+            else:
+                # 3. Совсем новый юзер
+                user = User(tg_id=tg_id, username=username, role="client")
+                session.add(user)
+        
+        await session.commit()
+        
+        # КЛЮЧЕВОЙ МОМЕНТ: 
+        # Нам нужно "оживить" объект после коммита, чтобы обращение к .role не вызывало ошибку
+        await session.refresh(user) 
+        return user.role
 
-async def get_user_role(tg_id: int) -> str:
-    async with async_session() as session:
-        query = select(User.role).where(User.tg_id == tg_id)
-        result = await session.execute(query)
-        return result.scalar_one_or_none()
+async def set_user_role(session, target, role):
+    # 1. Определяем, как ищем юзера
+    if str(target).startswith('@'):
+        clean_target = target.replace('@', '')
+        query = select(User).where(User.username == clean_target)
+    else:
+        clean_target = int(target)
+        query = select(User).where(User.tg_id == clean_target)
+
+    result = await session.execute(query)
+    user = result.scalar_one_or_none()
+
+    if user:
+        # Если юзер есть — просто обновляем роль
+        user.role = role
+    else:
+        # 2. Если юзера нет — создаем новую запись (предрегистрация)
+        if str(target).startswith('@'):
+            new_user = User(
+                tg_id=None,
+                username=target.replace('@', ''),
+                role=role
+            )
+        else:
+            new_user = User(
+                tg_id=int(target),
+                role=role,
+                username=None # Или "Unknown"
+            )
+        session.add(new_user)
+    
+    # Сохраняем изменения
+    await session.commit()
+    return True

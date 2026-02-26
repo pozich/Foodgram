@@ -15,4 +15,4 @@ DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
 DB_PORT = os.getenv("DB_PORT", "5432")
 
 DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-WEB_URL = f"{os.getenv("WEB_URL")}/app/web/pages" 
+WEB_URL = f"{os.getenv("WEB_URL")}" 

@@ -1,16 +1,52 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ-панель</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <link rel="stylesheet" href="../static/style.css">
-</head>
-<body>
-    <h1>ТЫ АДМИН</h1>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>Админ-панель</title>
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+        <link rel="stylesheet" href="/static/style.css">
+    </head>
+    <body>
+        <main id="app">
+            <section id="settings-section">
+                <h2 class="section-title">Настройки</h2>
 
-    <script src="../static/script.js"></script>
-</body>
+                <div class="card">
+                    <label class="input-label">Управление доступом</label>
+                    <input type="text" id="target_id" placeholder="ID или @username" class="modern-input">
+
+                    <div class="action-row">
+                        <button onclick="manageSeller('remove')" class="btn-outline">Убрать</button>
+                        <button onclick="manageSeller('add')" class="btn-filled">Добавить</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="db-section" style="display: none;">
+                <h2 class="section-title">База данных</h2>
+                <div class="card" style="padding: 0; overflow: hidden;">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th class="col-user">Продавец</th>
+                                <th class="col-bakery" style="text-align: right;">Пекарни</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sellers-list">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <header class="bottom-nav">
+            <div class="nav-container">
+                <button class="nav-btn active" id="btn-settings" onclick="showTab('settings')">Настройки</button>
+                <button class="nav-btn" id="btn-db" onclick="showTab('db')">БД</button>
+            </div>
+        </header>
+
+        <script src="/static/script.js"></script>
+    </body>
 </html>
