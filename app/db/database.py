@@ -8,7 +8,7 @@ from app.db.models import Base, User
 
 load_dotenv()
 
-engine = create_async_engine(os.getenv("DATABASE_URL"), echo=True)
+engine = create_async_engine(os.getenv("DATABASE_URL"), echo=False)
 async_session = async_sessionmaker(engine)
 
 async def init_db():

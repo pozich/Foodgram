@@ -1,4 +1,4 @@
-# app/bot/filters/__init__.py
+# app/bot/filters.py
 
 from aiogram.filters import BaseFilter
 from aiogram.types import Message

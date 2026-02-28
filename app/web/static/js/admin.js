@@ -1,18 +1,12 @@
-const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
-
-// Настройка темы
-document.documentElement.style.setProperty('--tg-bg-color', tg.backgroundColor);
-
-// Загружаем данные сразу при старте, если вдруг открыта вкладка БД
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('db-section').style.display !== 'none') {
+    const dbSection = document.getElementById('db-section');
+    if (dbSection && dbSection.style.display !== 'none') {
         loadSellers();
     }
 });
 
 async function manageSeller(action) {
+    const btn = event.target;
     const targetInput = document.getElementById('target_id');
     const targetValue = targetInput.value.trim();
 
@@ -20,40 +14,30 @@ async function manageSeller(action) {
         tg.showAlert("Введите ID или Username!");
         return;
     }
-    
-    const payload = {
-        scope: 'admin',
-        action: action,
-        target: targetValue,
-    };
 
-    tg.HapticFeedback.impactOccurred('medium');
+    btn.disabled = true;
+    tg.MainButton.showProgress();
 
     try {
-        const response = await fetch('/api/admin', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+        const result = await apiRequest('/api/admin', {
+            action: action,
+            target: targetValue
         });
 
-        const result = await response.json();
-        
         if (result.status === 'success') {
-            tg.showPopup({
-                title: 'Успешно',
-                message: `Операция выполнена для: ${targetValue}`,
-                buttons: [{type: 'ok'}]
-            });
+            tg.HapticFeedback.notificationOccurred('success');
             targetInput.value = '';
-            // Если мы в разделе БД, обновляем список после добавления
             if (document.getElementById('db-section').style.display !== 'none') {
-                loadSellers();
+                await loadSellers();
             }
+            tg.showScanQrPopup({ text: "Готово!" });
+            setTimeout(() => tg.closeScanQrPopup(), 1000);
         } else {
-            tg.showAlert("Ошибка: " + (result.message || "что-то пошло не так"));
+            tg.showAlert("Ошибка: " + (result.message || "пользователь не найден"));
         }
-    } catch (e) {
-        tg.showAlert("Сервер не отвечает. Проверь туннель!");
+    } finally {
+        btn.disabled = false;
+        tg.MainButton.hideProgress();
     }
 }
 
@@ -114,7 +98,7 @@ function showTab(tabId) {
         settingsSection.style.display = 'none';
         btnDb.classList.add('active');
         btnSettings.classList.remove('active');
-        loadSellers(); // Теперь загрузка вызывается правильно
+        loadSellers();
     } else {
         dbSection.style.display = 'none';
         settingsSection.style.display = 'block';

@@ -1,12 +1,11 @@
+# app/web/__init__.py
 from aiohttp import web
-from .admin_api import admin_api_router as admin_handler
-from .client_api import client_api_router as client_handler
+from .handlers import admin_api, seller_api, client_api
 
 def setup_web_handlers(app: web.Application):
-    # API эндпоинты
-    app.router.add_post('/api/admin', admin_handler)
-    app.router.add_post('/api/client', client_handler)
+    app.add_routes(admin_api.routes)
+    app.add_routes(seller_api.routes)
+    app.add_routes(client_api.routes)
     
-    # Статика и страницы
     app.router.add_static('/static', path='app/web/static', name='static')
-    app.router.add_static('/', path='app/web/pages', name='pages')
+    app.router.add_static('/', path='app/web/pages', name='pages', show_index=True)
