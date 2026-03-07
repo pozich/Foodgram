@@ -1,0 +1,17 @@
+# .gitignore
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+
+# JS / React
+web/node_modules/
+web/dist/
+.eslintcache
+
+# Docker
+.dockerignore
+
+# OS
+.DS_Store
