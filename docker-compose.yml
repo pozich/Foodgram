@@ -3,7 +3,6 @@ version: '3.8'
 services:
   db:
     image: postgres:15-alpine
-    container_name: foodgram_db
     restart: always
     env_file:
       - .env
@@ -17,7 +16,7 @@ services:
       - "5432:5432"
 
   api:
-    build: 
+    build:
       context: ./api
       dockerfile: Dockerfile
     container_name: foodgram_api
@@ -35,9 +34,10 @@ services:
 
   bot:
     build: ./bot
+    container_name: foodgram_bot
     env_file: .env
     depends_on:
-      - api  # Чтобы бот не падал, пока API не встанет
+      - api
     restart: always
 
   web:

@@ -27,6 +27,8 @@ class User(Base):
     tg_id: Mapped[int] = mapped_column(BigInteger, unique=True)
     username: Mapped[Optional[str]] = mapped_column(String(32))
     role: Mapped[str] = mapped_column(String(16), default='client')
+    
+    owner_profile: Mapped[Optional["OwnerProfile"]] = relationship(back_populates="user")
 
 class OwnerProfile(Base):
     __tablename__ = 'owner_profiles'
@@ -39,6 +41,7 @@ class OwnerProfile(Base):
     tier: Mapped["Tier"] = relationship(back_populates="owners")
     bakeries: Mapped[List["Bakery"]] = relationship(back_populates="owner")
     staff_list: Mapped[List["Staff"]] = relationship(back_populates="owner")
+    user: Mapped["User"] = relationship(back_populates="owner_profile")
 
 class Bakery(Base):
     __tablename__ = 'bakers'
